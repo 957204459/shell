@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "             \"1:selinux\"    "
 echo "             \"2:hostname\"   "
+echo "             \"3:pass"
 read -p "enter:" xy
 case $xy in
      1)

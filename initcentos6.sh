@@ -23,6 +23,7 @@ setHostname() {
         sed -i "/HOSTNAME/d" /etc/sysconfig/network
         echo "HOSTNAME=$hostname" >>/etc/sysconfig/network
         echo "set to hosts"
+        hostname $hostname
         echo "127.0.0.1 $hostname" >>/etc/hosts
 }
 setYum() {

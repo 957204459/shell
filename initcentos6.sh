@@ -51,6 +51,34 @@ setHistory() {
         echo "set history add date"
         echo "export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S"" >>/etc/bashrc
 }
+setSysctl() {
+        \cp /etc/sysctl.conf /etc/sysctl.conf.$(date +%F)
+        cat >>/etc/sysctl.conf <<EOF
+        net.ipv4.tcp_fin_timeout = 2
+        net.ipv4.tcp_tw_reuse = 1
+        net.ipv4.tcp_tw_recycle = 1
+        net.ipv4.tcp_syncookies = 1
+        net.ipv4.tcp_keepalive_time =600
+        net.ipv4.ip_local_port_range = 4000    65000
+        net.ipv4.tcp_max_syn_backlog = 16384
+        net.ipv4.tcp_max_tw_buckets = 36000
+        net.ipv4.route.gc_timeout = 100
+        net.ipv4.tcp_syn_retries = 1
+        net.ipv4.tcp_synack_retries = 1
+        net.core.somaxconn = 16384
+        net.core.netdev_max_backlog = 16384
+        net.ipv4.tcp_max_orphans = 16384
+        net.nf_conntrack_max = 25000000
+        net.netfilter.nf_conntrack_max = 25000000
+        net.netfilter.nf_conntrack_tcp_timeout_established = 180
+        net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120
+        net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60
+        net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120
+EOF
+        sleep 2
+        sysctl -p
+
+}
 echo "################################"
 echo "#                              "
 echo "#               1:selinux"
@@ -58,7 +86,7 @@ echo "#               2:hostname"
 echo "#               3:ulimit"
 echo "#               4:yum"
 echo "#               5 history add date"
-echo "#                               " 
+echo "#               6 sysctl optimize  " 
 echo "################################"
 read -p "确定:" xy
 case $xy in
@@ -88,6 +116,9 @@ case $xy in
        ;;
      5)
        setHistory
+       ;;
+     6)
+       setSysctl
        ;;
      *)
        echo "usage $0 1 2"
